@@ -8,13 +8,10 @@ int memo[301][301];
 
 int main() {
     int n;
+    int max = -1001;
 
     cin >> n;
 
-    //0 0 0 0
-    //0 
-    //0
-    //0
     for (int i = 0; i <= 300; i++) {
         memo[0][i] = 0;
         memo[i][0] = 0;
@@ -24,10 +21,23 @@ int main() {
         for (int j = 1; j <= n; j++) {
             int t;
             cin >> t;
-            memo[i][j] = t + memo[i-1][j] + memo[i][j-1] - memo[i-1][j-1];
+            memo[i][j] = t + memo[i - 1][j] + memo[i][j - 1] - memo[i - 1][j - 1];
         }
     }
-    
-    for(
 
+    for (int k = 0; k < n; k++) { // + k까지 보겠다. 만약 n = 4라면 + 3칸 까지만 봐야됨. 왜? 공간 4 == 접근 3
+        //k = 0, 자신칸만 보겠다 == 1*1. k = 1, 한칸 더까지 == 2*2를 보겠다.
+        for (int i = 1; i <= n - k; i++) { //4까지 봄 왜? 공간을 4까지 늘려놨음
+            for (int j = 1; j <= n - k; j++) {
+                int sum = memo[i + k][j + k]
+                    + memo[i - 1][j - 1]
+                    - memo[i + k][j - 1]
+                    - memo[i - 1][j + k];
+                if (max < sum) {
+                    max = sum;
+                }
+            }
+        }
+    }
+    cout << max;
 }
