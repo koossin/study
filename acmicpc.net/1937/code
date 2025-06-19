@@ -1,1 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
+using namespace std;
+
+int memo[501][501];
+int remake[501][501];
+
+int dfs(int x, int y, int n) {
+	if (remake[x][y] != -1) {
+		return remake[x][y];
+	}
+
+	remake[x][y] = 0;
+	if (x > 0 && memo[x][y] < memo[x-1][y]) { //위
+		remake[x][y] = max(remake[x][y], 1 + dfs(x - 1, y, n));
+	}
+	if (y > 0 && memo[x][y] < memo[x][y - 1]) { //왼
+		remake[x][y] = max(remake[x][y], 1 + dfs(x, y - 1, n));
+	}
+	if (x < n && memo[x][y] < memo[x + 1][y]) { //아래
+		remake[x][y] = max(remake[x][y], 1 + dfs(x + 1, y, n));
+	}
+	if (y < n && memo[x][y] < memo[x][y + 1]) { //오른
+		remake[x][y] = max(remake[x][y], 1 + dfs(x, y + 1, n));
+	}
+
+	return remake[x][y];
+}
+
+int main() {
+	int n;
+
+	cin >> n;
+
+	//init
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) {
+			int t;
+			cin >> t;
+			memo[i][j] = t;
+			remake[i][j] = -1;
+		}
+	}
+
+	//solve
+	int sum = 0;
+	for (int i = 1; i <= n; i++) {
+		for (int j = 1; j <= n; j++) {
+			sum = max(sum, dfs(i, j, n));
+		}
+	}
+
+	cout << sum + 1;
+
+}
