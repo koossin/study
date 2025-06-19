@@ -1,1 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
+using namespace std;
+
+long long arr[1000001];
+long long tree[4000001];
+
+void init(int node, int start, int end) {
+	if (start == end) { //맨 마지막 노드
+		tree[node] = arr[start];
+		return;
+	}
+
+
+	int mid = (start + end) / 2;
+
+	init(node * 2, start, mid);
+	init(node * 2 + 1, mid + 1, end);
+
+	//마지막 노드가 아닌 노드
+	tree[node] = tree[node * 2] + tree[node * 2 + 1];
+}
+
+void replace(int node, int start, int end, int index, long long diff) {
+	if (index < start || index > end) //탐색 구간이 start~end, 만약 index가 3이라면? ~2 or 4~은 더하면안됨
+		return;
+
+	tree[node] += diff; //조건만 맞으면 다 더함
+	
+	if (start == end) //맨 마지막 노드면 더하고 끝냄
+		return;
+	
+	int mid = (start + end) / 2;
+
+	replace(node * 2, start, mid, index, diff);
+	replace(node * 2 + 1, mid + 1, end, index, diff);
+}
+
+long long print(int node, int start, int end, int x, int y) { //if 1~5, 3~4
+	if (start >= x && end <= y) //범위 내에 있을때, start>= 3 end <= 4 //3~4인데 3~3 4~4 3~4 이럴때
+		return tree[node];
+	if (start > y || end < x) //완전히 안겹칠때, start > 4 || end < 3 //3~4인데 4~5 or 1~2 이럴때
+		return 0;
+
+	int mid = (start + end) / 2;
+
+	return print(node * 2, start, mid, x, y) + print(node * 2 + 1, mid + 1, end, x, y);
+}
+
+int main() {
+	int n, m, k;
+	
+	cin >> n >> m >> k;
+
+	//init v
+	for (int i = 1; i <= n; i++) {
+		cin >> arr[i];
+	}
+
+	//init tree
+	init(1, 1, n);
+
+	//replace or print
+	for (int i = 0; i < m + k; i++) {
+		int a, b;
+		long long c;
+
+		cin >> a >> b >> c;
+
+		if (a == 1) { //replace
+			long long diff = c - arr[b];
+			arr[b] = c;
+			replace(1, 1, n, b, diff);
+		}
+		else if (a == 2) { //print
+			cout << print(1, 1, n, b, c) << '\n';
+		}
+	}
+}
