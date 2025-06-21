@@ -1,1 +1,108 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+#include <map>
 
+using namespace std;
+
+//-1은 미개 1~k까지 문명의 번호
+int world[2001][2001]; //0 ~ 2000 실제 사용은 1~2000
+
+int parent[100001]; //부모의 종류 가능 갯수
+
+int find(int x) { //x의 부모가 누구야
+	if (x == parent[x])
+		return x;
+	return parent[x] = find(parent[x]);
+}
+bool mix(int a, int b) { //부모가 다르면 섞어
+	a = find(a);
+	b = find(b);
+
+	if (a == b) {
+		return false; //부모가 같아서 안섞음
+	}
+	parent[b] = a;
+	return true; //부모가 달라서 섞었어
+}
+
+int main() {
+	int n, k;
+	queue<pair<int, int>> q;
+
+	cin >> n >> k;
+
+	//init world
+	for (int i = 0; i <= 2000; i++) {
+		for (int j = 0; j <= 2000; j++) {
+			world[i][j] = -1; //-1 == 미개
+		}
+	}
+	for (int i = 1; i <= k; i++) {
+		int x, y;
+		cin >> x >> y;
+		world[x][y] = i;
+		parent[i] = i;
+		q.push({ x,y });
+	}
+
+	int dx[4] = { -1, 1, 0, 0 };
+	int dy[4] = { 0, 0, -1, 1 };
+	int year = 0;
+	int nums = k; //문명 갯수
+
+	while (1) {
+		//queue<pair<int, int>> new_q;
+		int size = q.size();
+
+		for (int i = 0; i < size; i++) {
+			int x = q.front().first;
+			int y = q.front().second;
+			q.pop();
+			for (int d = 0; d < 4; d++) {
+				int nx = x + dx[d];
+				int ny = y + dy[d];
+
+				if (nx < 1 || ny < 1 || nx > n || ny > n)
+					continue;
+
+				if (world[nx][ny] != -1 && world[nx][ny] != world[x][y]) { //문명이 존재시
+					if (mix(world[x][y], world[nx][ny])) { //문명 섞기 == parent 배열 변경
+						//섞였다면
+						nums--; //문명 갯수를 줄이고
+						if (nums == 1) { //문명 갯수가 1 == 대통합되었으면
+							cout << year;
+							return 0;
+						}
+					}
+				}
+			}
+			q.push({ x,y });
+		}
+
+
+		for (int i = 0; i < size; i++) { //병합 후에 퍼뜨리기
+			int x = q.front().first;
+			int y = q.front().second;
+			q.pop();
+			for (int d = 0; d < 4; d++) {
+				int nx = x + dx[d];
+				int ny = y + dy[d];
+
+				if (nx < 1 || ny < 1 || nx > n || ny > n)
+					continue;
+
+				if (world[nx][ny] == -1) { //미개 문명시
+					world[nx][ny] = world[x][y]; //미개 문명에 현재 문명을 전파
+					q.push({ nx, ny });
+				}
+				
+			}
+		}
+		//q = new_q;
+		year++;
+	}
+
+	return 0;
+}
