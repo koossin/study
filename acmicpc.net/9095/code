@@ -1,0 +1,30 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+int dfs(int cur, int target) {
+	if (cur > target) {
+		return 0;
+	}
+
+	if (cur == target) {
+		return 1;
+	}
+
+	return dfs(cur + 1, target) + dfs(cur + 2, target) + dfs(cur + 3, target);
+}
+
+int main() {
+	int t;
+	cin >> t;
+	for (int i = 0; i < t; i++) {
+		int n;
+		cin >> n;
+		cout << dfs(0, n) << "\n";
+	}
+
+	return 0;
+}
