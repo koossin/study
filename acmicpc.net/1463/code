@@ -1,0 +1,42 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+//bool is_visited[1000001];
+
+int main() {
+	int x, cnt = 0;
+	queue<int> q;
+
+	cin >> x;
+
+	q.push(x);
+
+	while (!q.empty()) {
+		int size = q.size();
+
+		for (int i = 0; i < size; i++) {
+			x = q.front();
+			q.pop();
+
+			if (x == 1) {
+				cout << cnt;
+				return 0;
+			}
+
+			if (x % 3 == 0) {
+				q.push(x / 3);
+			}
+			if (x % 2 == 0) {
+				q.push(x / 2);
+			}
+			q.push(x - 1);
+		}
+		cnt++;
+	}
+
+	return 0;
+}
