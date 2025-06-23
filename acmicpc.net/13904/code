@@ -1,0 +1,44 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <map>
+
+using namespace std;
+
+int arr[1001];
+
+int main() {
+	int n;
+	cin >> n;
+	multimap<int, int, greater<int>> mm;
+	for (int i = 0; i < n; i++) {
+		int a, b; //a == 날짜 //b == 점수
+		cin >> a >> b; 
+		mm.insert({ b,a }); //점수 기준 내림차순
+	}
+
+	fill(arr, arr + 1001, 0);
+	int sum = 0;
+	for (auto [b, a] : mm) { //a == 날짜 //b == 점수
+		if (arr[a] == 0) { //점수 가장 좋은게 날짜에 없으면
+			arr[a] = b;
+			sum += b;
+		}
+		else { //그 날짜에 먼저 들어와 있는게 있으면
+			a--;  //전 날짜로 가서
+			while (a >= 1) { //a==1이 될때까지 날짜 확인
+				if (arr[a] == 0) { //비어있는지 확인
+					arr[a] = b; //비어있으면 넣기
+					sum += b;
+					break;
+				}
+				a--;
+			}
+		}
+	}
+
+	cout << sum;
+
+	return 0;
+}
