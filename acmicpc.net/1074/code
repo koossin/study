@@ -1,0 +1,38 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <map>
+
+using namespace std;
+
+
+int findZ(int n, int r, int c) {
+	if (n == 0)
+		return 0;
+
+	int half = 1 << (n - 1);
+	int size = half * half;
+
+	if (r < half && c < half) {
+		return findZ(n - 1, r, c);
+	}
+	else if (r < half && c >= half) {
+		return 1 * size + findZ(n - 1, r, c - half);
+	}
+	else if (r >= half && c < half) {
+		return 2 * size + findZ(n - 1, r - half, c);
+	}
+	else if (r >= half && c >= half) {
+		return 3 * size + findZ(n - 1, r - half, c - half);
+	}
+}
+
+int main() {
+	int n, r, c;
+	cin >> n >> r >> c;
+
+	cout << findZ(n, r, c) << endl;
+
+	return 0;
+}
