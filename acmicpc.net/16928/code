@@ -1,0 +1,66 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <map>
+
+using namespace std;
+
+int game_map[101]; //1~100
+bool visited[101];
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	//init
+	for (int i = 1; i <= 100; i++) {
+		game_map[i] = i;
+	}
+	for (int i = 1; i <= 100; i++) {
+		visited[i] = false;
+	}
+
+
+	//ladder
+	for (int i = 0; i < n; i++) {
+		int a, b;
+		cin >> a >> b;
+		game_map[a] = b;
+	}
+
+	//snake
+	for (int i = 0; i < m; i++) {
+		int a, b;
+		cin >> a >> b;
+		game_map[a] = b;
+	}
+
+	int cnt = 0;
+	queue<int> q;
+	q.push(1);
+	visited[1] = true;
+	while (!q.empty()) {
+		int size = q.size();
+
+		for (int i = 0; i < size; i++) {
+			int cur_pos = q.front();
+			q.pop();
+
+			if (cur_pos == 100) {
+				cout << cnt << endl;
+				return 0;
+			}
+
+			for (int i = 1; i <= 6; i++) {
+				if (cur_pos + i <= 100 && !visited[cur_pos + i]) {
+					q.push(game_map[cur_pos + i]);
+					visited[cur_pos + i] = true;
+				}
+			}
+		}
+		cnt++;
+	}
+
+	return 0;
+}
