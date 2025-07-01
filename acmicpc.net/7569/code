@@ -1,0 +1,119 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <map>
+
+using namespace std;
+
+struct Point {
+	int x, y, z;
+};
+
+int tomato_map[101][101][101]; //0~100
+
+void check_map(int m, int n, int h) {
+	cout << endl;
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < n; j++) {
+			for (int k = 0; k < m; k++) {
+				cout << tomato_map[k][j][i] << " ";
+			}
+			cout << endl;
+		}
+		cout << endl;
+	}
+}
+
+int bfs(int m, int n, int h, queue<Point> &q, int zeros) {
+	int days = 0;
+
+	if (zeros == 0)
+		return 0;
+	if (q.size() == 0)
+		return -1;
+
+	while (!q.empty()) {
+		int size = q.size();
+		int cur_zero = zeros;
+
+		for (int i = 0; i < size; i++) {
+			Point p = q.front(); q.pop();
+			int x = p.x; int y = p.y; int z = p.z;
+			
+			if (x - 1 >= 0 && tomato_map[x - 1][y][z] == 0) {
+				q.push({ x - 1,y,z });
+				tomato_map[x - 1][y][z] = 1;
+				zeros--;
+			}
+			if (y - 1 >= 0 && tomato_map[x][y - 1][z] == 0) {
+				q.push({ x,y - 1,z });
+				tomato_map[x][y - 1][z] = 1;
+				zeros--;
+			}
+			if (z - 1 >= 0 && tomato_map[x][y][z - 1] == 0) {
+				q.push({ x,y,z - 1 });
+				tomato_map[x][y][z - 1] = 1;
+				zeros--;
+			}
+			if (x + 1 < m && tomato_map[x + 1][y][z] == 0) {
+				q.push({ x + 1,y,z });
+				tomato_map[x + 1][y][z] = 1;
+				zeros--;
+			}
+			if (y + 1 < n && tomato_map[x][y + 1][z] == 0) {
+				q.push({ x,y + 1,z });
+				tomato_map[x][y + 1][z] = 1;
+				zeros--;
+			}
+			if (z + 1 < h && tomato_map[x][y][z + 1] == 0) {
+				q.push({ x,y,z + 1 });
+				tomato_map[x][y][z + 1] = 1;
+				zeros--;
+			}
+		}
+		if (cur_zero == zeros) { //하나도 안바꼈을 때
+			if (zeros >= 1) //그러고 안익은게 하나라도 존재하면
+				return -1; //모든 토마토를 익히지 못한다고 판단
+			else { //안익은게 0개라면
+				return days; //그때까지 지난 날짜를 return
+			}
+		}
+		days++;
+	}
+
+	return days;
+}
+
+int main() {
+	int m, n, h; //가로 세로 높이
+	int zeros = 0; //안익은 토마토 갯수
+	queue<Point> q;
+	cin >> m >> n >> h;
+
+	//init
+	for (int i = 0; i <= 100; i++) {
+		for (int j = 0; j <= 100; j++) {
+			for (int k = 0; k <= 100; k++) {
+				tomato_map[k][j][i] = -1;
+			}
+		}
+	}
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < n; j++) {
+			for (int k = 0; k < m; k++) {
+				int temp; //익음 = 1, 안익음 = 0, 없음 = -1
+				cin >> temp;
+				if (temp == 1) //익으면
+					q.push({ k,j,i });
+				else if(temp == 0)//안익은거면
+					zeros++;
+				tomato_map[k][j][i] = temp;
+			}
+		}
+	}
+	//check_map(m, n, h);
+	cout << bfs(m, n, h, q, zeros);
+
+	return 0;
+}
