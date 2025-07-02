@@ -1,0 +1,34 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <map>
+#include <set>
+
+using namespace std;
+
+int n, m;
+vector<int> v;
+
+void dfs(int start, int depth) {
+	if (depth == m) { //3 출력하고
+		for (int num : v) {
+			cout << num << " ";
+		}
+		cout << "\n";
+		return;
+	}
+
+	for (int i = start; i <= n; i++) {
+		v.push_back(i); //1 넣고
+		dfs(i + 1, depth + 1); //2 m까지 가서
+		v.pop_back(); //4 뒤에 꺼 뺴고
+	}
+}
+
+int main() {
+	cin >> n >> m;
+	dfs(1, 0);
+
+	return 0;
+}
