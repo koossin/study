@@ -1,0 +1,45 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <map>
+#include <set>
+
+using namespace std;
+
+
+int main() {
+	multiset<int, greater<int>> ms;
+	int t;
+	cin >> t;
+
+	for (int i = 0; i < t; i++) {
+		int k;
+		cin >> k;
+		for (int j = 0; j < k; j++) {
+			char c;
+			int n;
+			cin >> c >> n;
+
+			if (c == 'I') {
+				ms.insert(n);
+			}
+			else if (c == 'D') {
+				if (!ms.empty()) {
+					if (n == 1)
+						ms.erase(ms.begin());
+					else if (n == -1)
+						ms.erase(--ms.end());
+				}
+			}
+		}
+		if (ms.empty())
+			cout << "EMPTY" << "\n";
+		else
+			cout << *ms.begin() << " " << *(--ms.end()) << "\n";
+
+		ms.clear();
+	}
+
+	return 0;
+}
