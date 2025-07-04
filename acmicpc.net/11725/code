@@ -1,0 +1,51 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <map>
+#include <set>
+
+using namespace std;
+
+vector<vector<int>> v(100001);
+int arr[100001];
+
+void bfs(int n) {
+	queue<int> q;
+	q.push(n);
+	arr[1] = 1;
+
+	while (!q.empty()) {
+		int cur = q.front(); //1, 6
+		q.pop();
+		for (int i = 0; i < v[cur].size(); i++) {
+			int node = v[cur][i]; //6 4, 1 3
+			if (arr[node] == 0) {
+				q.push(node);
+				arr[node] = cur;
+			}
+		}
+	}
+}
+
+int main() {
+	int n;
+	cin >> n;
+
+	//init
+	fill(arr, arr + n + 1, 0); //모든 arr 요소를 0으로 만듦
+	for (int i = 0; i < n - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		v[a].push_back(b);
+		v[b].push_back(a);
+	}
+	bfs(1);
+	
+	//print
+	for (int i = 2; i <= n; i++) {
+		cout << arr[i] << "\n";
+	}
+
+	return 0;
+}
