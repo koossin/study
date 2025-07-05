@@ -1,0 +1,42 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <map>
+#include <set>
+
+using namespace std;
+
+long long target;
+
+int bfs(int n) {
+	int result = 1;
+	queue<long long> q;
+	q.push(n);
+
+	while (!q.empty()) {
+		int size = q.size();
+
+		for (int i = 0; i < size; i++) {
+			long long cur = q.front();
+			q.pop();
+			if (cur == target) {
+				return result;
+			}
+			if(cur * 2 <= target)
+				q.push(cur * 2);
+			if((cur * 10) + 1 <= target)
+				q.push((cur * 10) + 1);
+		}
+		result++;
+	}
+	return -1;
+}
+
+int main() {
+	int a;
+	cin >> a >> target;
+	cout << bfs(a);
+
+	return 0;
+}
