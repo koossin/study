@@ -1,0 +1,69 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int n;
+vector<char> v((1 << 26) + 1, '.');
+
+//전위
+void first(int node) {
+    if(v[node] == '.')
+        return;
+    
+    cout << v[node];
+    first(node * 2);
+    first((node * 2) + 1);
+}
+//중위
+void second(int node) {
+    if(v[node] == '.')
+        return;
+
+    second(node * 2);
+    cout << v[node];
+    second((node * 2) + 1);
+}
+//후위
+void third(int node) {
+    if(v[node] == '.')
+        return;
+
+    third(node * 2);
+    third((node * 2) + 1);
+    cout << v[node];
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+	cin.tie(0);
+
+    cin >> n;
+    
+
+    for(int i = 1; i <= n; i++) {
+        char a, b, c;
+        cin >> a >> b >> c;
+
+        if(a == 'A') {
+            v[1] = a;
+            v[2] = b;
+            v[3] = c;
+        }
+        else {
+            auto it = find(v.begin(), v.end(), a);
+            int pos = (int)(it - v.begin());
+            v[pos * 2] = b;
+            v[(pos * 2) + 1] = c;
+        }
+    }
+
+    first(1);
+    cout << "\n";
+    second(1);
+    cout << "\n";
+    third(1);
+    
+    return 0;
+}
