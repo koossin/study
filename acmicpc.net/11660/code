@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+	cin.tie(0);
+
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> cost(n+1,vector<int>(n+1));
+    vector<vector<int>> dp(n+1,vector<int>(n+1));
+
+    //input init
+    for(int i = 0; i <= n; i++) {
+        cost[0][i] = 0;
+        cost[i][0] = 0;
+    }
+    for(int i = 1; i <= n; i++) {
+        for(int j = 1; j <= n; j++) {
+            cin >> cost[i][j];
+        }
+    }
+
+    //dp init
+    for(int i = 1; i <= n; i++) {
+        for(int j = 1; j <= n; j++) {
+            dp[i][j] = cost[i][j] + dp[i-1][j] + dp[i][j-1] - dp[i-1][j-1];
+        }
+    }
+
+
+    //print
+    for(int i = 0; i < m; i++) {
+        int x1,y1,x2,y2;
+        cin >> x1 >> y1 >> x2 >> y2;
+
+        if(x1 == x2 && y1 == y2)
+            cout << cost[x1][y1];
+        else
+            cout << dp[x2][y2] - dp[x1-1][y2] - dp[x2][y1-1] + dp[x1-1][y1-1];
+
+        cout << "\n";
+    }
+
+    return 0;
+}
