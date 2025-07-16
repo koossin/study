@@ -1,0 +1,59 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+
+using namespace std;
+
+int arr[128][128];
+int paper[2] = {0, 0};
+
+int check(int size, int x, int y) {
+    int num = arr[x][y];
+    for(int i = x; i < x + size; i++) {
+        for(int j = y; j < y + size; j++) {
+            if(num != arr[i][j])
+                return -1;
+        }
+    }
+    return num;
+}
+
+void daq(int size, int x, int y) {
+    //-1이 아니다 == 그 구역 모두 단일화됐다
+    int check_num = check(size, x, y);
+    if(check_num != -1) {
+        paper[check_num]++;
+        return;
+    }
+
+    int half = size / 2;
+
+    daq(half, x, y);
+    daq(half , x + half, y);
+    daq(half, x, y + half);
+    daq(half, x + half, y + half);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+	cin.tie(0);
+
+    
+    //init
+    int n;
+    cin >> n;
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            cin >> arr[i][j];
+        }
+    }
+
+    //
+    daq(n, 0, 0);
+
+    //output
+    cout << paper[0] << "\n" << paper[1];
+
+    return 0;
+}
