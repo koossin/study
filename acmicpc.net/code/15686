@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+	cin.tie(0);
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<pair<int,int>> house;
+    vector<pair<int,int>> chicken;
+    vector<vector<int>> dist;
+    
+
+    //input
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            int city;
+            cin >> city;
+            if(city == 1)
+                house.push_back({i,j});
+            else if(city == 2)
+                chicken.push_back({i,j});
+        }
+    }
+
+    //init
+    for(int i = 0; i < house.size(); i++) {
+        vector<int> v;
+        int h_x = house[i].first;
+        int h_y = house[i].second;
+        for(int j = 0; j < chicken.size(); j++) {
+            int c_x = chicken[j].first;
+            int c_y = chicken[j].second;
+            
+            int dx = abs(c_x - h_x);
+            int dy = abs(c_y - h_y);
+
+            v.push_back(dx + dy);
+        }
+        dist.push_back(v);
+    }
+
+    vector<int> select(chicken.size(), 0);
+    fill(select.begin(), select.begin() + m, 1);
+    sort(select.begin(), select.end());
+
+    int result = 1e9;
+
+    do {
+        vector<int> shorts(house.size(), 1e9);
+        
+        for(int i = 0; i < house.size(); i++) {
+            for(int j = 0; j < chicken.size(); j++) {
+                if(select[j] == 1) {
+                    if(shorts[i] > dist[i][j]) {
+                        shorts[i] = dist[i][j];
+                    }
+                }
+            }
+        }
+
+        int sum = 0;
+        for(int i = 0; i < shorts.size(); i++) {
+            sum += shorts[i];
+        }
+        if(result > sum)
+            result = sum;
+    } while(next_permutation(select.begin(), select.end()));
+
+    cout << result;
+
+    return 0;
+}
