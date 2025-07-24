@@ -1,0 +1,101 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+
+using namespace std;
+
+vector<int> people; //people vec for union == parents
+
+int findP(int n) {
+    if(people[n] == n)
+        return n;
+    return people[n] = findP(people[n]);
+}
+
+void unite(int a, int b) {
+    int pa = findP(a);
+    int pb = findP(b);
+    if(pa == pb)
+        return;
+    
+    if(pa < pb) {
+        people[pb] = pa;
+    }
+    else if(pa > pb) {
+        people[pa] = pb;
+    }
+
+    return;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+	cin.tie(0);
+
+    int n, m; //people size, party size
+    int t; //people that know true size
+    int host; //purson that knows the true;
+    int result; //count lies
+
+    cin >> n >> m;
+    result = m;
+    people.resize(n + 1); //1~n
+    //1~n init
+    for(int i = 1; i <= n; i++) {
+        people[i] = i;
+    }
+
+    cin >> t;
+    //if nobdy knows the true, then say lie in every party
+    if(t == 0) {
+        for(int i = 0; i < m; i++) {
+            int temp1;
+            cin >> temp1;
+            for(int j = 0; j < temp1; j++) {
+                int temp2;
+                cin >> temp2;
+            }
+        }
+        cout << m;
+        return 0;
+    }
+    //at least one purson knows the ture, unite a and b
+    int a;
+    cin >> a;
+    for(int i = 1; i < t; i++) {
+        int b;
+        cin >> b;
+        unite(a, b);
+    }
+
+
+    // 1) 파티 정보를 저장하고 내부 참가자들끼리 unite
+    vector<vector<int>> parties(m);
+    for (int i = 0; i < m; i++) {
+        int k;
+        cin >> k;
+        parties[i].resize(k);
+        for (int j = 0; j < k; j++) {
+            cin >> parties[i][j];
+        }
+        for (int j = 1; j < k; j++) {
+            unite(parties[i][j-1], parties[i][j]);
+        }
+    }
+
+    // 2) 모든 unite가 끝난 후, 진실 보유자(a)의 루트와 비교하여 거짓말 가능한 파티만 카운트
+    for (int i = 0; i < m; i++) {
+        for (int x : parties[i]) {
+            if (findP(x) == findP(a)) {
+                result--;
+                break;
+            }
+        }
+    }
+
+
+    cout << result;
+    
+    return 0;
+}
